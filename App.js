@@ -1,3 +1,6 @@
+import React, { useState, useRef } from 'react';
+import { View, Text, Button, TextInput, Alert } from 'react-native';
+import { captureRef } from 'react-native-view-shot';
 import { createWorker } from 'tesseract.js';
 
 function App() {
@@ -16,20 +19,6 @@ function App() {
     } catch (error) {
       console.error('Error capturing screenshot:', error);
       Alert.alert('Error', 'Failed to capture screenshot');
-    }
-  };
-
-  const handleFileUpload = async (event) => {
-    try {
-      const file = event.target.files[0];
-      if (!file) return;
-
-      const uri = URL.createObjectURL(file);
-      console.log('Image uploaded:', uri);
-      performOCR(uri);
-    } catch (error) {
-      console.error('Error uploading image:', error);
-      Alert.alert('Error', 'Failed to upload image');
     }
   };
 
@@ -60,14 +49,15 @@ function App() {
         <Text>This is the content you captured</Text>
       </View>
       <Button title="Capture Screenshot" onPress={captureScreenshot} />
-      <Text>Upload image from device</Text>
+      <input type="file" accept="image/*" />
       <Text>OCR Result:</Text>
       <Text>{extractedText}</Text>
       <Text>Edit text below:</Text>
-      <textarea
+      <TextInput
         value={editedText}
         onChangeText={handleTextChange}
         style={{ marginTop: 20, width: '80%', height: 200, borderColor: 'gray', borderWidth: 1 }}
+        multiline={true}
       />
     </View>
   );
