@@ -49,7 +49,7 @@ function App() {
         <Text>This is the content you captured</Text>
       </View>
       <Button title="Capture Screenshot" onPress={captureScreenshot} />
-      <input type="file" accept="image/*" />
+      <Button type="file" accept="image/*" />
       <Text>OCR Result:</Text>
       <Text>{extractedText}</Text>
       <Text>Edit text below:</Text>
