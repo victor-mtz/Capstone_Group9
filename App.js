@@ -2,6 +2,9 @@ import React, { useState, useRef } from 'react';
 import { View, Text, Button, TextInput, Alert, Image } from 'react-native';
 import { captureRef } from 'react-native-view-shot';
 import { createWorker } from 'tesseract.js';
+import axios from 'axios';
+import ImageUpload from './ImageUpload';
+
 
 function App() {
   const [extractedText, setExtractedText] = useState('');
@@ -59,6 +62,20 @@ function App() {
     }
     console.log(file);
   };
+  const saveImageData = async () => {
+    try {
+      // Make API call to your backend server to save image data and extracted text
+      const response = await axios.post('http://your-backend-server-url/uploadImage', {
+        imageData: imageUri,
+        extractedText: extractedText,
+      });
+      console.log('Image data saved:', response.data);
+      // You can handle the response as needed
+    } catch (error) {
+      console.error('Error saving image data:', error);
+      Alert.alert('Error', 'Failed to save image data');
+    }
+  };
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Button title="Capture Screenshot" onPress={captureScreenshot} />
@@ -93,10 +110,14 @@ function App() {
             }}
             multiline={true}
           />
+          <Button title="Save Image Data" onPress={saveImageData} />
         </View>
+        
       ) : (
         ''
-      )}
+      ) } ( <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <ImageUpload userId={userId} />
+  </View>)
     </View>
   );
 }
