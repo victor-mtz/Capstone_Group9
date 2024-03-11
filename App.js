@@ -4,13 +4,13 @@ import { captureRef } from 'react-native-view-shot';
 import { createWorker } from 'tesseract.js';
 import * as ImagePicker from 'expo-image-picker';
 
-const loggerFunction = (m) => console.log(m);
-
 function App() {
   const [extractedText, setExtractedText] = useState('');
   const [editedText, setEditedText] = useState('');
   const [capturedImageUri, setCapturedImageUri] = useState('');
   const myRef = useRef(null);
+
+  const loggerFunction = (m) => console.log(m);
 
   const captureScreenshot = async () => {
     try {
@@ -19,7 +19,7 @@ function App() {
         quality: 0.8,
       });
       console.log('Screenshot captured:', uri);
-      setCapturedImageUri(uri); // Store the captured image URI
+      setCapturedImageUri(uri); 
       performOCR(uri);
     } catch (error) {
       console.error('Error capturing screenshot:', error);
@@ -29,24 +29,23 @@ function App() {
 
   const performOCR = async (uri) => {
     try {
-        const worker = createWorker({
-            logger: loggerFunction,
-        });
-        console.log("Worker object:", worker); // Add this line for debugging
-        await worker.load();
-        await worker.loadLanguage('eng');
-        await worker.initialize('eng');
-        const { data: { text } } = await worker.recognize(uri);
-        console.log('Extracted text:', text);
-        setExtractedText(text);
-        setEditedText(text);
-        await worker.terminate();
+      const worker = createWorker({
+        logger: loggerFunction,
+      });
+      console.log("Worker object:", worker); 
+      await worker.load();
+      await worker.loadLanguage('eng');
+      await worker.initialize('eng');
+      const { data: { text } } = await worker.recognize(uri);
+      console.log('Extracted text:', text);
+      setExtractedText(text);
+      setEditedText(text);
+      await worker.terminate();
     } catch (error) {
-        console.error('Error performing OCR:', error);
-        Alert.alert('Error', 'Failed to perform OCR');
+      console.error('Error performing OCR:', error);
+      Alert.alert('Error', 'Failed to perform OCR');
     }
-};
-
+  };
 
   const handleTextChange = (text) => {
     setEditedText(text);
@@ -63,7 +62,7 @@ function App() {
         reader.onload = async (e) => {
           const imageDataUrl = e.target.result;
           setCapturedImageUri(imageDataUrl);
-          performOCR(imageDataUrl); // Perform OCR when an image is selected
+          performOCR(imageDataUrl);
         };
         reader.readAsDataURL(file);
       };
@@ -77,11 +76,11 @@ function App() {
           quality: 1,
         }).then((result) => {
           console.log('Image Picker Result:', result);
-
+  
           if (!result.cancelled && result.assets.length > 0) {
             const selectedImageUri = result.assets[0].uri;
             setCapturedImageUri(selectedImageUri);
-            performOCR(selectedImageUri); // Perform OCR when an image is selected
+            performOCR(selectedImageUri);
           }
         });
       } catch (error) {
@@ -89,6 +88,12 @@ function App() {
         Alert.alert('Error', 'Failed to pick image');
       }
     }
+  };
+
+  const clearData = () => {
+    setCapturedImageUri('');
+    setExtractedText('');
+    setEditedText('');
   };
 
   return (
@@ -103,8 +108,7 @@ function App() {
       <View ref={myRef}>
         <Text>This is the content you captured</Text>
       </View>
-      <Button title="Capture Screenshot" onPress={captureScreenshot} />
-      <Button type="file" accept="image/*" />
+      <Button title="Clear" onPress={clearData} />
       <Text>OCR Result:</Text>
       <Text>{extractedText}</Text>
       <Text>Edit text below:</Text>
@@ -119,4 +123,3 @@ function App() {
 }
 
 export default App;
-
