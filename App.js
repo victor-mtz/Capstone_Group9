@@ -37,12 +37,13 @@ function App() {
   const pickFile = async () => {
     try {
       const result = await DocumentPicker.getDocumentAsync({
-        type: 'image/*',
+        type: 'application/pdf,image/png,image/jpeg',
       });
       console.log('Document Picker Result:', result);
-
+  
       if (result.type === 'success') {
         const selectedFile = result;
+        console.log('Selected File URI:', selectedFile.uri);
         setSelectedFile(selectedFile);
       }
     } catch (error) {
