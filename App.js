@@ -3,7 +3,7 @@ import { View, Text, Button, TextInput, Alert, Image } from 'react-native';
 import { captureRef } from 'react-native-view-shot';
 import { createWorker } from 'tesseract.js';
 import axios from 'axios';
-import ImageUpload from './ImageUpload';
+import ImageUpload from './utils/imageUpload.js';
 
 
 function App() {
@@ -65,7 +65,7 @@ function App() {
   const saveImageData = async () => {
     try {
       // Make API call to your backend server to save image data and extracted text
-      const response = await axios.post('http://your-backend-server-url/uploadImage', {
+      const response = await axios.post('http://localhost:5432/uploadImage', {
         imageData: imageUri,
         extractedText: extractedText,
       });

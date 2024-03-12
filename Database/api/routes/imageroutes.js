@@ -1,7 +1,7 @@
 const express = require('express');
 const multer = require('multer');
 const pool = require('../../db/database');
-
+const { query } = require('../../db/client');
 const router = express.Router();
 
 // Multer setup for handling file uploads
