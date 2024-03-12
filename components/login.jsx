@@ -1,23 +1,17 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button } from 'react-native';
-import { useNavigate, useParams } from 'react-router-dom';
-import email_icon from '../assets/email.png';
-import password_icon from '../assets/password.png';
 
-const Login = ({ setToken }) => {
+const Login = ({ setToken, navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-  const navigate = useNavigate();
-  const { action } = useParams();
 
   const handleAction = async (e) => {
     e.preventDefault();
     setError('');
 
     try {
-      const apiUrl = action === 'register' ? 'dummy URL' : '';
+      // const apiUrl = action === 'register' ? 'registerUrl' : 'loginUrl';
 
       const response = await fetch(apiUrl, {
         method: 'POST',
@@ -37,18 +31,17 @@ const Login = ({ setToken }) => {
       const data = await response.json();
       setSuccessMessage(data.message);
       setToken(data.token);
-      navigate('/home');
     } catch (error) {
       setError(error.message || 'An error occurred. Please try again.');
     }
   };
 
-  const title = action === 'login' ? 'Login' : 'Signup';
+  // const title = action === 'login' ? 'Login' : 'Signup';
 
   return (
     <form onSubmit={handleAction} className="container">
       <div className="header">
-        <div className="text">{title}</div>
+        <div className="text">Nothing</div>
         <div className="underline"></div>
       </div>
       {successMessage && (
@@ -56,7 +49,6 @@ const Login = ({ setToken }) => {
       )}
       <div className="inputs">
         <div className="input">
-          <img src={email_icon} alt="" />
           <input
             type="email"
             placeholder="Email Id"
@@ -65,7 +57,6 @@ const Login = ({ setToken }) => {
           />
         </div>
         <div className="input">
-          <img src={password_icon} alt="" />
           <input
             type="password"
             placeholder="Password"
@@ -75,7 +66,7 @@ const Login = ({ setToken }) => {
         </div>
       </div>
       {error && <div className="error-message">{error}</div>}
-      <button className="submit">{title}</button>
+      <button className="submit">Nothing</button>
     </form>
   );
 };
