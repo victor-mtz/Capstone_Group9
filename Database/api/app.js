@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
-const imageRoutes = require('./imageRoutes');
+const imageRoutes = require('./routes/imageRoutes');
+const { query } = require('../db/client');
 
 // Middleware
 app.use(express.json());
@@ -9,7 +10,7 @@ app.use(express.json());
 app.use('/api/images', imageRoutes);
 
 // Start server
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5433;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
