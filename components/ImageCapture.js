@@ -65,7 +65,7 @@ export default function ImageCapture({ navigation }) {
     try {
       // Make API call to your backend server to save image data and extracted text
       const response = await axios.post(
-        'http://your-backend-server-url/uploadImage',
+        'http://localhost:5433/uploadImage',
         {
           imageData: imageUri,
           extractedText: extractedText,

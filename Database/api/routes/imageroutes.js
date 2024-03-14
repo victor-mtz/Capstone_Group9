@@ -1,6 +1,6 @@
 const express = require('express');
 const multer = require('multer');
-const pool = require('../../db/database');
+const pool = require('../../db/client');
 const { query } = require('../../db/client');
 const router = express.Router();
 

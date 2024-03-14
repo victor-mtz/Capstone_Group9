@@ -13,7 +13,7 @@ const ImageUpload = ({ userId }) => {
       formData.append('userId', userId);
 
       const response = await axios.post(
-        'http://localhost:3000/api/images/upload',
+        'http://localhost:5433/api/images/upload',
         formData,
         {
           headers: {

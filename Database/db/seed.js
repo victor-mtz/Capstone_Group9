@@ -30,6 +30,36 @@ const userImages = [
   // Add more user images as needed
 ];
 
+
+// Define SQL queries for creating tables
+const createUsersTableQuery = `
+  CREATE TABLE IF NOT EXISTS users (
+    id SERIAL PRIMARY KEY,
+    username VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    first_name VARCHAR(255),
+    last_name VARCHAR(255)
+  );
+  
+`;
+const createUsersimagesTableQuery = `
+CREATE TABLE user_images (
+  id SERIAL PRIMARY KEY,
+  user_id INTEGER REFERENCES users(id),
+  image_data TEXT NOT NULL  
+`;
+const createTables = async () => {
+  try {
+    await query(createUsersTableQuery);
+    await query(createUsersimagesTableQuery);
+    console.log('Tables created successfully');
+  } catch (error) {
+    console.error('Error creating tables:', error);
+  }
+};
+createTables();
+
 // Function to seed the database with initial data
 const seedDatabase = async () => {
   try {

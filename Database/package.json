@@ -4,7 +4,8 @@
   "description": "Your project description",
   "main": "index.js",
   "scripts": {
-    "start": "node api/app.js"
+    "start": "node api/app.js",
+    "seed": "node ./db/seed.js"
   },
   "dependencies": {
     "express": "^4.17.1",
