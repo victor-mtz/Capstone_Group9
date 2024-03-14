@@ -1,13 +1,16 @@
-
 const { Pool } = require('pg');
 
 // Define the connection string
-const connectionString = process.env.DATABASE_URL || 'postgres://postgres:please@localhost:5433/capstone';
+const connectionString =
+  process.env.DATABASE_URL || 'postgres://localhost:5432/capstone';
 
 // Create a PostgreSQL connection pool
 const pool = new Pool({
   connectionString: connectionString,
-  ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false // For Heroku Postgres, allow SSL connection in production
+  ssl:
+    process.env.NODE_ENV === 'production'
+      ? { rejectUnauthorized: false }
+      : false, // For Heroku Postgres, allow SSL connection in production
 });
 
 // Function to execute database queries
