@@ -1,41 +1,40 @@
-import React, { useState, useRef } from 'react';
-import { View, Text, Button, TextInput, Alert, Image } from 'react-native';
-import { captureRef } from 'react-native-view-shot';
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  Button,
+  TextInput,
+  Alert,
+  Image,
+  ScrollView,
+} from 'react-native';
 import { createWorker } from 'tesseract.js';
-import axios from 'axios';
-
-export default function ImageCapture({ navigation }) {
-  const [extractedText, setExtractedText] = useState('');
-  const [imageUri, setImageUri] = useState('');
+import * as DocumentPicker from 'expo-document-picker';
+function ImageCapture() {
   const [editedText, setEditedText] = useState('');
-  const [imageLoaded, setImageLoaded] = useState(false);
-  const myRef = useRef(null);
-  const captureScreenshot = async () => {
-    console.log('myRef', myRef);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const pickFile = async () => {
     try {
-      const captureSource = document.getElementById('image-container');
-      const uri = await captureRef(captureSource, {
-        format: 'png',
-        quality: 0.8,
+      const result = await DocumentPicker.getDocumentAsync({
+        type: 'application/pdf,image/png,image/jpeg',
       });
-      console.log('Screenshot captured:', uri);
-      performOCR(uri);
+      if (result.assets && result.assets.length) {
+        const pickerResults = result.assets[0];
+        setSelectedFile(pickerResults);
+      } else {
+        console.error('pickFile failed');
+      }
     } catch (error) {
-      console.error('Error capturing screenshot:', error);
-      Alert.alert('Error', 'Failed to capture screenshot');
+      console.error('Error picking file:', error);
+      Alert.alert('Error', 'Failed to pick file');
     }
   };
-  const performOCR = async (uri) => {
+  const runOCR = async (uri) => {
     try {
-      const worker = createWorker();
-      const awaitedWorker = await worker;
-      awaitedWorker.load;
-      awaitedWorker.loadLanguage('eng');
-      awaitedWorker.initialize('eng');
+      const worker = await createWorker('eng');
       const {
         data: { text },
-      } = await awaitedWorker.recognize(uri);
-      setExtractedText(text);
+      } = await worker.recognize(uri);
       setEditedText(text);
       await worker.terminate();
     } catch (error) {
@@ -46,81 +45,62 @@ export default function ImageCapture({ navigation }) {
   const handleTextChange = (text) => {
     setEditedText(text);
   };
-  const onImageLoad = async (e) => {
-    const file = e.target.files[0];
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setImageUri(reader.result);
-      setImageLoaded(true);
-      const blobData = new Blob([reader.result]);
-      console.log(blobData);
-    };
-
-    if (file) {
-      reader.readAsDataURL(file);
-    }
-    console.log(file);
+  const clearData = () => {
+    setSelectedFile(null);
+    setEditedText('');
   };
-  const saveImageData = async () => {
+  const saveTextToBackend = async () => {
     try {
-      // Make API call to your backend server to save image data and extracted text
-      const response = await axios.post(
-        'http://localhost:5433/uploadImage',
-        {
-          imageData: imageUri,
-          extractedText: extractedText,
-        }
-      );
-      console.log('Image data saved:', response.data);
-      // You can handle the response as needed
+      const response = await fetch('OUR API', {
+        //ADD OUR API HERE!!!
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ editedText }),
+      });
+      if (response.ok) {
+        Alert.alert('Success', 'Text saved successfully');
+      } else {
+        throw new Error('Failed to save text');
+      }
     } catch (error) {
-      console.error('Error saving image data:', error);
-      Alert.alert('Error', 'Failed to save image data');
+      console.error('Error saving text to backend:', error);
+      Alert.alert('Error', 'Failed to save text to backend');
     }
   };
-
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Button title="Capture Screenshot" onPress={captureScreenshot} />
-      <input type="file" accept="image/*" onChange={onImageLoad} />
-      {imageLoaded ? <div>Image Preview:</div> : ''}
-      <img
-        style={
-          imageLoaded
-            ? {
-                height: '150px',
-                width: '150px',
-              }
-            : null
-        }
-        id="image-container"
-        src={imageUri}
-      />
-      {imageLoaded ? (
-        <View>
-          <Text>OCR Result:</Text>
-          <Text>{extractedText}</Text>
-          <Text>Edit text below:</Text>
-          <TextInput
-            value={editedText}
-            onChangeText={handleTextChange}
-            style={{
-              marginTop: 20,
-              width: '80%',
-              height: 200,
-              borderColor: 'gray',
-              borderWidth: 1,
-            }}
-            multiline={true}
-          />
-          <Button title="Save Image Data" onPress={saveImageData} />
-        </View>
-      ) : (
-        ''
-      )}
+    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        {/* <ImageUpload userId={userId} /> */}
+        <Button title="Load Image" onPress={pickFile} />
+        {selectedFile ? (
+          <View style={{ marginTop: 20 }}>
+            <Text>Selected Image: {selectedFile.name}</Text>
+            <Image
+              source={{ uri: selectedFile.uri }}
+              style={{ marginTop: 10, width: 200, height: 200 }}
+              resizeMode="contain"
+            />
+          </View>
+        ) : null}
+        <Button title="Run OCR" onPress={() => runOCR(selectedFile.uri)} />
+        <Button title="Clear" onPress={clearData} />
+        <Text>Edit Your Text:</Text>
+        <TextInput
+          value={editedText}
+          onChangeText={handleTextChange}
+          style={{
+            marginTop: 20,
+            width: '80%',
+            height: 200,
+            borderColor: 'gray',
+            borderWidth: 1,
+          }}
+          multiline={true}
+        />
+        <Button title="Save" onPress={saveTextToBackend} />
       </View>
-    </View>
+    </ScrollView>
   );
 }
+export default ImageCapture;
