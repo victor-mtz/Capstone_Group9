@@ -14,6 +14,7 @@ import NavBar from './components/NavBar.js';
 const Stack = createNativeStackNavigator();
 
 function App() {
+  const [token, setToken] = useState(null);
   return (
     <NavigationContainer>
       <Stack.Navigator>

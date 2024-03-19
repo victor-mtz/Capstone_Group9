@@ -29,7 +29,7 @@ async function createUser({
   }
 }
 
-async function getUserByUsername(username, name) {
+async function getUserByUsername(username) {
   try {
     const {
       rows: [user],
@@ -41,7 +41,7 @@ async function getUserByUsername(username, name) {
             `,
       [username]
     );
-    if (!user && !name) {
+    if (!user) {
       throw {
         name: 'UserNotFoundError',
         message: 'A user with that username does not exist',
