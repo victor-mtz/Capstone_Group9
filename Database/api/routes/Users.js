@@ -8,9 +8,11 @@ const { createUser, getUserByUsername } = require('../../db/DBUtils');
 
 // Route to handle user login
 router.post('/login', async (req, res, next) => {
+  res.set('Access-Control-Allow-Origin', ['http://localhost:8081']);
   const { username, password } = req.body;
   // request must have both
-  if (!username || !password) {
+  if (username == undefined || password == undefined) {
+    console.log('nothing supplied');
     next({
       name: 'MissingCredentialsError',
       message: 'Please supply both a username and password',
@@ -28,7 +30,8 @@ router.post('/login', async (req, res, next) => {
           id: user.id,
           username,
         },
-        JWT_SECRET,
+        // TODO: figure out why the file isn't reading from .env
+        JWT_SECRET || 'nothing',
         {
           expiresIn: '1w',
         }
@@ -79,7 +82,8 @@ router.post('register', async (req, res, next) => {
         id: user.id,
         username,
       },
-      JWT_SECRET,
+      // TODO: figure out why the file isn't reading from .env
+      JWT_SECRET || 'nothing',
       {
         expiresIn: '1w',
       }
