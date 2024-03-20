@@ -1,13 +1,7 @@
 const { Pool } = require('pg');
-
-// Retrieve database connection string from environment variable or use a default value
 const connectionString =
   process.env.DATABASE_URL || 'postgres://localhost:5432/capstone';
-
-// Create a PostgreSQL connection pool
 const pool = new Pool({ connectionString });
-
-// execute database queries
 const query = async (text, params) => {
   try {
     const result = await pool.query(text, params);
@@ -17,8 +11,6 @@ const query = async (text, params) => {
     throw error;
   }
 };
-
-// Define seed data
 const users = [
   {
     username: 'user1',
@@ -34,15 +26,11 @@ const users = [
     first_name: 'Jane',
     last_name: 'Doe',
   },
-  // Add more users as needed
 ];
-
 const userImages = [
   { user_id: 1, image_data: 'hexadecimal_data_of_image1' },
   { user_id: 2, image_data: 'hexadecimal_data_of_image2' },
 ];
-
-// Define SQL queries for creating tables
 const createUsersTableQuery = `
   CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
@@ -54,10 +42,10 @@ const createUsersTableQuery = `
   );
 `;
 const createUsersimagesTableQuery = `
-  CREATE TABLE user_images (
+  CREATE TABLE IF NOT EXISTS user_images (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(id),
-    image_data TEXT NOT NULL  
+    image_data TEXT NOT NULL
   );
 `;
 const createTables = async () => {
@@ -67,17 +55,17 @@ const createTables = async () => {
     console.log('Tables created successfully');
   } catch (error) {
     console.error('Error creating tables:', error);
+    throw error;
   }
 };
-
-// Function to seed the database with data
 const seedDatabase = async () => {
+  const client = await pool.connect();
   try {
-    // Insert users into the users table
+    await client.query('BEGIN');
     await createTables();
     await Promise.all(
       users.map(async (user) => {
-        await query(
+        await client.query(
           'INSERT INTO users (username, email, password, first_name, last_name) VALUES ($1, $2, $3, $4, $5)',
           [
             user.username,
@@ -89,23 +77,24 @@ const seedDatabase = async () => {
         );
       })
     );
-
-    // Insert user images into the user_images table
     await Promise.all(
       userImages.map(async (image) => {
-        await query(
+        await client.query(
           'INSERT INTO user_images (user_id, image_data) VALUES ($1, $2)',
           [image.user_id, image.image_data]
         );
       })
     );
-
+    await client.query('COMMIT');
     console.log('Database seeded successfully');
   } catch (error) {
+    await client.query('ROLLBACK');
     console.error('Error seeding database:', error);
+    throw error;
   } finally {
-    pool.end();
+    client.release();
   }
 };
-
-seedDatabase();
+seedDatabase()
+  .catch((error) => console.error('Error seeding database:', error))
+  .finally(() => pool.end());
