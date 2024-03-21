@@ -6,7 +6,10 @@ import RegistrationForm from './register';
 export default function NavBar({ navigation }) {
   return (
     <div style={{ width: '100%' }}>
-      <Button title="Login" onPress={() => navigation.navigate('Login')} />
+      <Button
+        title="Login/Register"
+        onPress={() => navigation.navigate('Login')}
+      />
       <Button
         title="Capture Image"
         onPress={() => navigation.navigate('Image Capture')}
