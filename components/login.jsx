@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 const Login = ({ setToken, navigation }) => {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
@@ -12,6 +12,7 @@ const Login = ({ setToken, navigation }) => {
 
     try {
       // const apiUrl = action === 'register' ? 'registerUrl' : 'loginUrl';
+      const apiUrl = 'http://localhost:5433/api/users/login';
 
       const response = await fetch(apiUrl, {
         method: 'POST',
@@ -19,7 +20,7 @@ const Login = ({ setToken, navigation }) => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          email: email,
+          username: username,
           password: password,
         }),
       });
@@ -29,6 +30,7 @@ const Login = ({ setToken, navigation }) => {
       }
 
       const data = await response.json();
+      console.log(data);
       setSuccessMessage(data.message);
       setToken(data.token);
     } catch (error) {
@@ -50,10 +52,9 @@ const Login = ({ setToken, navigation }) => {
       <div className="inputs">
         <div className="input">
           <input
-            type="email"
-            placeholder="Email Id"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            placeholder="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
           />
         </div>
         <div className="input">

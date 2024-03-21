@@ -3,60 +3,7 @@ import { View, Text, Button, TextInput, Alert, Image, Platform } from 'react-nat
 import { createWorker } from 'tesseract.js';
 import * as DocumentPicker from 'expo-document-picker';
 function App() {
-  const [extractedText, setExtractedText] = useState('');
-  const [editedText, setEditedText] = useState('');
-  const [selectedFile, setSelectedFile] = useState(null);
-  const loggerFunction = (m) => console.log(m);
-  const performOCR = async (uri) => {
-    try {
-      const worker = createWorker({
-        logger: loggerFunction,
-      });
-      console.log("Worker object:", worker);
-      (await worker).load();
-      await worker.loadLanguage('eng');
-      await worker.initialize('eng');
-      const { data: { text } } = await worker.recognize(uri);
-      console.log('Extracted text:', text);
-      setExtractedText(text);
-      setEditedText(text);
-      await worker.terminate();
-    } catch (error) {
-      console.error('Error performing OCR:', error);
-      Alert.alert('Error', 'Failed to perform OCR');
-    }
-  };
-  const handleTextChange = (text) => {
-    setEditedText(text);
-  };
-  const pickFile = async () => {
-    try {
-      const result = await DocumentPicker.getDocumentAsync({
-        type: 'application/pdf,image/png,image/jpeg',
-      });
-      console.log('Document Picker Result:', result);
-      if (result.type === 'success') {
-        const selectedFile = result;
-        console.log('Selected File URI:', selectedFile.uri);
-        setSelectedFile(selectedFile);
-      }
-    } catch (error) {
-      console.error('Error picking file:', error);
-      Alert.alert('Error', 'Failed to pick file');
-    }
-  };
-  const runOCR = () => {
-    if (selectedFile) {
-      performOCR(selectedFile.uri);
-    } else {
-      Alert.alert('Error', 'No file selected');
-    }
-  };
-  const clearData = () => {
-    setSelectedFile(null);
-    setExtractedText('');
-    setEditedText('');
-  };
+  const [token, setToken] = useState(null);
   return (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Button title="Load Image" onPress={pickFile} />

@@ -1,12 +1,17 @@
+require('dotenv').config();
 const express = require('express');
 const app = express();
 const imageRoutes = require('./routes/imageRoutes');
 const { query } = require('../db/client');
 const userRoute = require('./routes/Users');
-require('dotenv').config();
 
 // Middleware
 app.use(express.json());
+
+// init cors
+const cors = require('cors');
+app.use(cors());
+app.options('*', cors());
 
 // Routes
 app.use('/api/images', imageRoutes);
