@@ -1,35 +1,29 @@
-import React, { useState, useRef } from 'react';
-import { View, Text, Button, TextInput, Alert, Image, Platform } from 'react-native';
-import { createWorker } from 'tesseract.js';
-import * as DocumentPicker from 'expo-document-picker';
+import React, { useState } from 'react';
+import { Provider } from 'react-redux';
+import store from './utils/api/store.js';
+import Login from './components/login.jsx';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import ImageCapture from './components/ImageCapture.js';
+import NavBar from './components/NavBar.js';
+
+const Stack = createNativeStackNavigator();
+
 function App() {
-  const [token, setToken] = useState(null);
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Button title="Load Image" onPress={pickFile} />
-      {selectedFile ? (
-        <View style={{ marginTop: 20 }}>
-          <Text>Selected Image: {selectedFile.name}</Text>
-          {/*preview*/}
-          <Image
-            source={{ uri: selectedFile.uri }}
-            style={{ marginTop: 10, width: 200, height: 200 }}
-            resizeMode="contain"
+    <Provider store={store}>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen
+            name="Home"
+            component={NavBar}
+            options={{ title: 'Welcome' }}
           />
-        </View>
-      ) : null}
-      <Button title="Run OCR" onPress={runOCR} />
-      <Button title="Clear" onPress={clearData} />
-      <Text>OCR Result:</Text>
-      <Text>{extractedText}</Text>
-      <Text>Edit text below:</Text>
-      <TextInput
-        value={editedText}
-        onChangeText={handleTextChange}
-        style={{ marginTop: 20, width: '80%', height: 200, borderColor: 'gray', borderWidth: 1 }}
-        multiline={true}
-      />
-    </View>
+          <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Image Capture" component={ImageCapture} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </Provider>
   );
 }
 export default App;
