@@ -53,14 +53,12 @@ router.post('/login', async (req, res, next) => {
   }
 });
 
-router.post('register', async (req, res, next) => {
+router.post('/register', async (req, res, next) => {
   const { username, email, password, first_name, last_name } = req.body;
+  const isFromRegister = true;
 
   try {
-    const existingUser = await getUserByUsername(
-      username,
-      first_name + '' + last_name
-    );
+    const existingUser = await getUserByUsername(username, isFromRegister);
 
     if (existingUser) {
       next({

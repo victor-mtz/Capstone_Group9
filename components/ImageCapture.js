@@ -7,6 +7,7 @@ import {
   Alert,
   Image,
   ScrollView,
+  StyleSheet,
 } from 'react-native';
 import { createWorker } from 'tesseract.js';
 import * as DocumentPicker from 'expo-document-picker';
@@ -52,7 +53,6 @@ function ImageCapture() {
   const saveTextToBackend = async () => {
     try {
       const response = await fetch('OUR API', {
-        //ADD OUR API HERE!!!
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -70,37 +70,70 @@ function ImageCapture() {
     }
   };
   return (
-    <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Button title="Load Image" onPress={pickFile} />
-        {selectedFile ? (
-          <View style={{ marginTop: 20 }}>
-            <Text>Selected Image: {selectedFile.name}</Text>
-            <Image
-              source={{ uri: selectedFile.uri }}
-              style={{ marginTop: 10, width: 200, height: 200 }}
-              resizeMode="contain"
-            />
-          </View>
-        ) : null}
-        <Button title="Run OCR" onPress={() => runOCR(selectedFile.uri)} />
-        <Button title="Clear" onPress={clearData} />
-        <Text>Edit Your Text:</Text>
-        <TextInput
-          value={editedText}
-          onChangeText={handleTextChange}
-          style={{
-            marginTop: 20,
-            width: '80%',
-            height: 200,
-            borderColor: 'gray',
-            borderWidth: 1,
-          }}
-          multiline={true}
-        />
-        <Button title="Save" onPress={saveTextToBackend} />
+    <ScrollView contentContainerStyle={styles.container}>
+      <View style={styles.titleContainer}>
+        <Text style={styles.title}>Image Capture</Text>
       </View>
+      <Button title="Load Image" onPress={pickFile} />
+      {selectedFile ? (
+        <View style={styles.imageContainer}>
+          <Text>Selected Image: {selectedFile.name}</Text>
+          <Image
+            source={{ uri: selectedFile.uri }}
+            style={styles.image}
+            resizeMode="contain"
+          />
+        </View>
+      ) : null}
+      <Button title="Run OCR" onPress={() => runOCR(selectedFile.uri)} />
+      <Button title="Clear" onPress={clearData} />
+      <Text style={styles.textLabel}>Edit Your Text:</Text>
+      <TextInput
+        value={editedText}
+        onChangeText={handleTextChange}
+        style={styles.textInput}
+        multiline={true}
+      />
+      <Button title="Save" onPress={saveTextToBackend} />
     </ScrollView>
   );
 }
+const styles = StyleSheet.create({
+  container: {
+    flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  titleContainer: {
+    marginBottom: 20,
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  imageContainer: {
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  image: {
+    marginTop: 10,
+    width: 200,
+    height: 200,
+  },
+  textLabel: {
+    marginTop: 20,
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  textInput: {
+    marginTop: 10,
+    width: '80%',
+    height: 200,
+    borderColor: 'gray',
+    borderWidth: 1,
+    padding: 10,
+  },
+});
 export default ImageCapture;

@@ -4,6 +4,9 @@ import { useLoginMutation, useRegisterMutation } from '../utils/api/authSlice';
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [isLogin, setIsLogin] = useState(true);
@@ -24,7 +27,17 @@ const Login = () => {
     const authMethod = isLogin ? login : register;
 
     try {
-      const data = await authMethod({ username, password }).unwrap();
+      const fetchBody = isLogin
+        ? { username, password }
+        : {
+            username,
+            password,
+            first_name: firstName,
+            last_name: lastName,
+            email,
+          };
+      console.log(fetchBody);
+      const data = await authMethod(fetchBody).unwrap();
       console.log(data);
       setSuccessMessage(data.message);
     } catch (error) {
@@ -58,6 +71,39 @@ const Login = () => {
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
+          {!isLogin ? (
+            <div className="input">
+              <input
+                placeholder="First Name"
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+              />
+            </div>
+          ) : (
+            ''
+          )}
+          {!isLogin ? (
+            <div className="input">
+              <input
+                placeholder="Last Name"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+              />
+            </div>
+          ) : (
+            ''
+          )}
+          {!isLogin ? (
+            <div className="input">
+              <input
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+          ) : (
+            ''
+          )}
         </div>
         {error && <div className="error-message">{error}</div>}
         <button className="submit">{authType}</button>
