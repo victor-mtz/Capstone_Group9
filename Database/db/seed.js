@@ -34,7 +34,7 @@ const userImages = [
 const createUsersTableQuery = `
   CREATE TABLE IF NOT EXISTS users (
     id SERIAL PRIMARY KEY,
-    username VARCHAR(255) NOT NULL,
+    username VARCHAR(255) UNIQUE NOT NULL,
     email VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
     first_name VARCHAR(255),
@@ -48,6 +48,18 @@ const createUsersimagesTableQuery = `
     image_data TEXT NOT NULL
   );
 `;
+
+async function dropTables() {
+  try {
+    console.log('Dropping All Tables...');
+    await pool.query(`
+    DROP TABLE IF EXISTS user_images;
+    DROP TABLE IF EXISTS users;
+  `);
+  } catch (error) {
+    throw error;
+  }
+}
 const createTables = async () => {
   try {
     await pool.query(createUsersTableQuery);
@@ -61,7 +73,8 @@ const createTables = async () => {
 const seedDatabase = async () => {
   const client = await pool.connect();
   try {
-    await client.query('BEGIN');
+    // Insert users into the users table
+    await dropTables();
     await createTables();
     await Promise.all(
       users.map(async (user) => {
