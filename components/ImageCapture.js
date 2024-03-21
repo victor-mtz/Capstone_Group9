@@ -105,5 +105,3 @@ function ImageCapture() {
   );
 }
 export default ImageCapture;
-
-export default ImageCapture;
