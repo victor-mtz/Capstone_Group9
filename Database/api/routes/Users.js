@@ -6,11 +6,11 @@ const { JWT_SECRET } = process.env;
 
 const { createUser, getUserByUsername } = require('../../db/DBUtils');
 
-// Route to handle user login
+
 router.post('/login', async (req, res, next) => {
   res.set('Access-Control-Allow-Origin', ['http://localhost:8081']);
   const { username, password } = req.body;
-  // request must have both
+  
   if (username == undefined || password == undefined) {
     console.log('nothing supplied');
     next({
@@ -30,7 +30,7 @@ router.post('/login', async (req, res, next) => {
           id: user.id,
           username,
         },
-        // TODO: figure out why the file isn't reading from .env
+       
         JWT_SECRET || 'nothing',
         {
           expiresIn: '1w',
@@ -80,7 +80,7 @@ router.post('/register', async (req, res, next) => {
         id: user.id,
         username,
       },
-      // TODO: figure out why the file isn't reading from .env
+      
       JWT_SECRET || 'nothing',
       {
         expiresIn: '1w',
