@@ -4,7 +4,11 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = process.env;
 
-const { createUser, getUserByUsername } = require('../../db/DBUtils');
+const {
+  createUser,
+  getUserByUsername,
+  getLoggedInUser,
+} = require('../../db/DBUtils');
 
 // Route to handle user login
 router.post('/login', async (req, res, next) => {
@@ -90,6 +94,17 @@ router.post('/register', async (req, res, next) => {
       message: 'Thank you for signing up!',
       token,
     });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+router.get('/me', async (req, res, next) => {
+  try {
+    console.log(req.user);
+    const user = await getLoggedInUser(req.user?.id);
+    res.send(user);
   } catch (error) {
     console.error(error);
     next(error);

@@ -53,7 +53,23 @@ async function getUserByUsername(username, fromRegister) {
   }
 }
 
+async function getLoggedInUser(userId) {
+  if (userId) {
+    try {
+      const {
+        rows: [user],
+      } = await pool.query('SELECT * FROM users WHERE id = $1', [userId]);
+      return user;
+    } catch (error) {
+      throw error;
+    }
+  } else {
+    return null;
+  }
+}
+
 module.exports = {
   createUser,
   getUserByUsername,
+  getLoggedInUser,
 };

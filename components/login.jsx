@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useLoginMutation, useRegisterMutation } from '../utils/api/authSlice';
+import { getUserToken } from '../utils/loginUtils';
 
-const Login = () => {
+const Login = ({ navigation }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [firstName, setFirstName] = useState('');
@@ -43,6 +44,11 @@ const Login = () => {
       setSuccessMessage(data.message);
     } catch (error) {
       setError(error.message || 'An error occurred. Please try again.');
+    } finally {
+      const activeToken = await getUserToken();
+      if (activeToken) {
+        navigation.navigate('User Home');
+      }
     }
   };
 
