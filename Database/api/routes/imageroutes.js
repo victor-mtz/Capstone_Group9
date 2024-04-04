@@ -11,7 +11,7 @@ const upload = multer({ storage });
 
 router.post('/upload', upload.single('image'), async (req, res) => {
     try {
-        const { userId } = req.body;
+        const { userId } = 1;
         const imageData = Buffer.from(req.file.buffer).toString('hex');
 
        

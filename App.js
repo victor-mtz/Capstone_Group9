@@ -21,6 +21,7 @@ function App() {
           />
           <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="Image Capture" component={ImageCapture} />
+          <Button title="Save Image" onPress={saveImageToBackend} />
         </Stack.Navigator>
       </NavigationContainer>
     </Provider>

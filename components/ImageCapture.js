@@ -61,7 +61,7 @@ const saveImageToBackend = async () => {
       name: selectedFile.name,
     });
 
-    const response = await fetch('http://localhost:5432/api/upload', {
+    const response = await fetch('http://localhost:5433/api/images/upload', {
       method: 'POST',
       body: formData,
     });
