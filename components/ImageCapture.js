@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { createWorker } from 'tesseract.js';
 import * as DocumentPicker from 'expo-document-picker';
+
 function ImageCapture() {
   const [editedText, setEditedText] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
@@ -37,12 +38,13 @@ function ImageCapture() {
         data: { text },
       } = await worker.recognize(uri);
       setEditedText(text);
-      await worker.terminate();
+      worker.terminate();
     } catch (error) {
       console.error('Error performing OCR:', error);
       Alert.alert('Error', 'Failed to perform OCR');
     }
   };
+
   const handleTextChange = (text) => {
     setEditedText(text);
   };
@@ -50,25 +52,28 @@ function ImageCapture() {
     setSelectedFile(null);
     setEditedText('');
   };
-  const saveTextToBackend = async () => {
-    try {
-      const response = await fetch('OUR API', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ editedText }),
-      });
-      if (response.ok) {
-        Alert.alert('Success', 'Text saved successfully');
-      } else {
-        throw new Error('Failed to save text');
-      }
-    } catch (error) {
-      console.error('Error saving text to backend:', error);
-      Alert.alert('Error', 'Failed to save text to backend');
+const saveImageToBackend = async () => {
+  try {
+    const formData = new FormData();
+    data?.append('uploaded-file', selectedFile.file, selectedFile.name,
+    );
+
+    const response = await fetch('http://localhost:5433/api/images/upload', {
+      method: 'POST',
+      body: formData,
+    });
+
+    if (response.ok) {
+      Alert.alert('Success', 'Image saved successfully');
+    } else {
+      throw new Error('Failed to save image');
     }
-  };
+  } catch (error) {
+    console.error('Error saving image to backend:', error);
+    Alert.alert('Error', 'Failed to save image to backend');
+  }
+};
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View style={styles.titleContainer}>
@@ -83,6 +88,7 @@ function ImageCapture() {
             style={styles.image}
             resizeMode="contain"
           />
+          <Button title="Save Image" onPress={saveImageToBackend} />
         </View>
       ) : null}
       <Button title="Run OCR" onPress={() => runOCR(selectedFile.uri)} />
@@ -94,7 +100,8 @@ function ImageCapture() {
         style={styles.textInput}
         multiline={true}
       />
-      <Button title="Save" onPress={saveTextToBackend} />
+      <Button title="Save" onPress={saveImageToBackend}
+      />
     </ScrollView>
   );
 }

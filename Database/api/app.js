@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const app = express();
-const imageRoutes = require('./routes/imageRoutes');
+const imageRoutes = require('./routes/imageroutes');
 const { query } = require('../db/client');
 const userRoute = require('./routes/Users');
 const jwt = require('jsonwebtoken');
@@ -33,7 +33,7 @@ app.use((req, res, next) => {
 app.use('/api/images', imageRoutes);
 app.use('/api/users', userRoute);
 
-// Start server
+
 const PORT = process.env.PORT || 5433;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

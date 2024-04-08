@@ -66,8 +66,22 @@ async function getLoggedInUser(userId) {
   } else {
     return null;
   }
-}
+};
 
+async function uploadImage(id, imageData) {
+  if (id && imageData) {
+    try {
+        await pool.query(
+          'INSERT INTO user_images (user_id, image_data) VALUES ($1, $2)', 
+          [id, imageData]
+          );
+        res.status(200).json({ message: 'Image uploaded successfully' });
+    } catch (error) {
+        console.error('Error uploading image:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+};
+}
 module.exports = {
   createUser,
   getUserByUsername,

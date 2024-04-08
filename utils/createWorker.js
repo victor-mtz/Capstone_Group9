@@ -29,8 +29,7 @@ module.exports = async (
   const resolves = {};
   const rejects = {};
 
-  // Current langs, oem, and config file.
-  // Used if the user ever re-initializes the worker using `worker.reinitialize`.
+
   const currentLangs = typeof langs === 'string' ? langs.split('+') : langs;
   let currentOem = oem;
   let currentConfig = config;
