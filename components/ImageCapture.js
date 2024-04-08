@@ -55,11 +55,8 @@ function ImageCapture() {
 const saveImageToBackend = async () => {
   try {
     const formData = new FormData();
-    formData.append('image', {
-      uri: selectedFile.uri,
-      type: selectedFile.type,
-      name: selectedFile.name,
-    });
+    data?.append('uploaded-file', selectedFile.file, selectedFile.name,
+    );
 
     const response = await fetch('http://localhost:5433/api/images/upload', {
       method: 'POST',

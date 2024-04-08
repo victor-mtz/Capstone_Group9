@@ -2,23 +2,22 @@ import { createSlice } from '@reduxjs/toolkit';
 import { api } from './api';
 
 const TOKEN = 'token';
-const BASE_URL = 'http://localhost:5433';
 
 const authApi = api.injectEndpoints({
   endpoints: (builder) => ({
     me: builder.query({
-      query: () => `${BASE_URL}/api/users/me`,
+      query: () => `/api/users/me`,
     }),
     login: builder.mutation({
       query: (credentials) => ({
-        url: `${BASE_URL}/api/users/login`,
+        url: `/api/users/login`,
         method: 'POST',
         body: credentials,
       }),
     }),
     register: builder.mutation({
       query: (credentials) => ({
-        url: `${BASE_URL}/api/users/register`,
+        url: `/api/users/register`,
         method: 'POST',
         body: credentials,
       }),
