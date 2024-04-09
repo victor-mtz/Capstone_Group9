@@ -8,6 +8,7 @@ import {
   Image,
   ScrollView,
   StyleSheet,
+  Platform,
 } from 'react-native';
 import { createWorker } from 'tesseract.js';
 import * as DocumentPicker from 'expo-document-picker';
@@ -52,27 +53,27 @@ function ImageCapture() {
     setSelectedFile(null);
     setEditedText('');
   };
-const saveImageToBackend = async () => {
-  try {
-    const formData = new FormData();
-    data?.append('uploaded-file', selectedFile.file, selectedFile.name,
-    );
+  const saveImageToBackend = async () => {
+    try {
+      const formData = new FormData();
+      formData?.append('uploaded-file', selectedFile.file, selectedFile.name);
 
-    const response = await fetch('http://localhost:5433/api/images/upload', {
-      method: 'POST',
-      body: formData,
-    });
+      const response = await fetch('http://localhost:5433/api/images/upload', {
+        method: 'POST',
+        body: formData,
+      });
 
-    if (response.ok) {
-      Alert.alert('Success', 'Image saved successfully');
-    } else {
-      throw new Error('Failed to save image');
+      if (response.statusText === 'OK') {
+        console.log('image saved');
+        Alert.alert('Success', 'Image saved successfully');
+      } else {
+        throw new Error('Failed to save image');
+      }
+    } catch (error) {
+      console.error('Error saving image to backend:', error);
+      Alert.alert('Error', 'Failed to save image to backend');
     }
-  } catch (error) {
-    console.error('Error saving image to backend:', error);
-    Alert.alert('Error', 'Failed to save image to backend');
-  }
-};
+  };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -100,7 +101,9 @@ const saveImageToBackend = async () => {
         style={styles.textInput}
         multiline={true}
       />
-      <Button title="Save" onPress={saveImageToBackend}
+      <Button
+        title="Save Text"
+        onPress={() => console.log('save text to be implemented')}
       />
     </ScrollView>
   );
