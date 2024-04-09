@@ -1,18 +1,15 @@
 const { Pool } = require('pg');
 
-
 const connectionString =
-  process.env.DATABASE_URL || 'postgres:please@//localhost:5432/capstone';
-
+  process.env.DATABASE_URL || 'postgres://localhost:5432/capstone';
 
 const pool = new Pool({
   connectionString: connectionString,
   ssl:
     process.env.NODE_ENV === 'production'
       ? { rejectUnauthorized: false }
-      : false, 
+      : false,
 });
-
 
 const query = async (text, params) => {
   try {
