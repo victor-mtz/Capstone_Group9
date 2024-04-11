@@ -10,5 +10,6 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE user_images (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(id),
-    image_data TEXT NOT NULL
+    image_data TEXT,
+    image_text TEXT
 );

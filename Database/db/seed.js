@@ -28,8 +28,8 @@ const users = [
   },
 ];
 const userImages = [
-  { user_id: 1, image_data: 'hexadecimal_data_of_image1' },
-  { user_id: 2, image_data: 'hexadecimal_data_of_image2' },
+  { user_id: 1, image_data: 'hexadecimal_data_of_image1', image_text: 'empty' },
+  { user_id: 2, image_data: 'hexadecimal_data_of_image2', image_text: 'empty' },
 ];
 const createUsersTableQuery = `
   CREATE TABLE IF NOT EXISTS users (
@@ -45,7 +45,8 @@ const createUsersimagesTableQuery = `
   CREATE TABLE IF NOT EXISTS user_images (
     id SERIAL PRIMARY KEY,
     user_id INTEGER REFERENCES users(id),
-    image_data TEXT NOT NULL
+    image_data TEXT,
+    image_text TEXT
   );
 `;
 
@@ -93,8 +94,8 @@ const seedDatabase = async () => {
     await Promise.all(
       userImages.map(async (image) => {
         await client.query(
-          'INSERT INTO user_images (user_id, image_data) VALUES ($1, $2)',
-          [image.user_id, image.image_data]
+          'INSERT INTO user_images (user_id, image_data, image_text) VALUES ($1, $2, $3)',
+          [image.user_id, image.image_data, image.image_text]
         );
       })
     );

@@ -58,10 +58,13 @@ function ImageCapture() {
       const formData = new FormData();
       formData?.append('uploaded-file', selectedFile.file, selectedFile.name);
 
-      const response = await fetch('http://localhost:5433/api/images/upload', {
-        method: 'POST',
-        body: formData,
-      });
+      const response = await fetch(
+        'http://localhost:5433/api/images/upload-image',
+        {
+          method: 'POST',
+          body: formData,
+        }
+      );
 
       if (response.statusText === 'OK') {
         console.log('image saved');
@@ -72,6 +75,34 @@ function ImageCapture() {
     } catch (error) {
       console.error('Error saving image to backend:', error);
       Alert.alert('Error', 'Failed to save image to backend');
+    }
+  };
+
+  // doesn't work yet
+  const saveTextToBackend = async () => {
+    try {
+      console.log(editedText);
+      const reqBody = { text: editedText };
+      const response = await fetch(
+        'http://localhost:5433/api/images/upload-text',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(reqBody),
+        }
+      );
+
+      if (response.statusText === 'OK') {
+        console.log('text saved');
+        Alert.alert('Success', 'Text saved successfully');
+      } else {
+        throw new Error('Failed to text image');
+      }
+    } catch (error) {
+      console.error('Error saving text to backend:', error);
+      Alert.alert('Error', 'Failed to save text to backend');
     }
   };
 
@@ -101,10 +132,7 @@ function ImageCapture() {
         style={styles.textInput}
         multiline={true}
       />
-      <Button
-        title="Save Text"
-        onPress={() => console.log('save text to be implemented')}
-      />
+      <Button title="Save Text" onPress={() => console.log('to implement')} />
     </ScrollView>
   );
 }

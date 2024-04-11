@@ -71,12 +71,45 @@ async function getLoggedInUser(userId) {
 async function uploadImage(id, imageData) {
   if (id && imageData) {
     try {
-      await pool.query(
+      const response = await pool.query(
         'INSERT INTO user_images (user_id, image_data) VALUES ($1, $2)',
         [id, imageData]
       );
+      return response;
     } catch (error) {
       console.error('Error uploading image:', error);
+    }
+  }
+}
+
+async function uploadText(id, imageText) {
+  if (id && imageText) {
+    try {
+      const response = await pool.query(
+        'INSERT INTO user_images (user_id, image_text) VALUES ($1, $2)',
+        [id, imageText]
+      );
+      return response;
+    } catch (error) {
+      console.error('Error uploading text:', error);
+    }
+  }
+}
+
+async function getUserImages(userId) {
+  if (userId) {
+    try {
+      const result = await pool.query(
+        'SELECT * FROM user_images WHERE user_id = $1',
+        [userId]
+      );
+      if (result) {
+        return result;
+      } else {
+        return 'NA';
+      }
+    } catch (error) {
+      console.error('Error retrieving user images');
     }
   }
 }
@@ -85,4 +118,6 @@ module.exports = {
   getUserByUsername,
   getLoggedInUser,
   uploadImage,
+  getUserImages,
+  uploadText,
 };

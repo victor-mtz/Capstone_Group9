@@ -38,9 +38,7 @@ const Login = ({ navigation }) => {
             last_name: lastName,
             email,
           };
-      console.log(fetchBody);
       const data = await authMethod(fetchBody).unwrap();
-      console.log(data);
       setSuccessMessage(data.message);
     } catch (error) {
       setError(error.message || 'An error occurred. Please try again.');
